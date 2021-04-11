@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./components/App";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
+import Snipper from "./Snipper";
 import firebase from "firebase";
 import registerServiceWorker from "./registerServiceWorker";
 
@@ -20,17 +21,17 @@ const store = createStore(rootReducer, composeWithDevTools());
 class Root extends React.Component{
 
   componentDidMount() {
+    console.log(this.props.isLoading);
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user);
+        this.props.setUser(user);
         this.props.history.push('/');
       }
     })
   }
 
   render(){
-    return (
-      
+    return  this.props.isLoading ? <Snipper/> : (
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/login" component={Login} />
@@ -40,7 +41,11 @@ class Root extends React.Component{
   }
 } 
 
-const RootWithAuth = withRouter(connect(null, {setUser})(Root));
+const mapStateToProps = state =>({
+  isLoading: state.user.isLoading
+});
+
+const RootWithAuth = withRouter(connect(mapStateToProps, {setUser})(Root));
 
 ReactDOM.render (
   <Provider store={store}>
