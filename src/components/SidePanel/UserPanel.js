@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import firebase from "../../firebase";
 import { Dropdown, Grid, Header, Icon } from "semantic-ui-react";
 
 class UserPanel extends Component{
@@ -14,9 +15,16 @@ class UserPanel extends Component{
         },
         {
             key:'signout',
-            text: <span>Sign out</span>
+            text: <span onClick={this.handleSignout}>Sign out</span>
         }
     ]
+
+    handleSignout = () =>{
+        firebase
+        .auth()
+        .signOut()
+        .then(() => console.log('signed out!'));
+    };
 
     render(){
         return(
