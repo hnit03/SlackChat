@@ -18,7 +18,7 @@ class SidePanel extends Component{
                 style={{backgroundColor: '#3498db', fontSize:'1.2rem'}}
             >
                 <UserPanel currentUser={ currentUser }/>
-                <Channels/>
+                <Channels currentUser={ currentUser }/>
             </Menu>
         );
     }

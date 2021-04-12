@@ -1,12 +1,16 @@
 import React, { Component } from "react";
+import firebase from '../../firebase';
+
 import { Button, Form, Icon, Input, Menu, Modal } from "semantic-ui-react";
 
 class Channels extends Component{
 
     state = {
+        user: this.props.currentUser,
         channels: [],
         channelName: '',
         channelDetails: '',
+        channelsRef: firebase.database().ref('channels'),
         modal: false
     }
 
@@ -14,11 +18,47 @@ class Channels extends Component{
 
     closeModal = () =>{ this.setState({ modal: false }) };
 
-    handleSubmit = () => {
-        this.setState({
-            
-        });
+    addChannel = () =>{
+        const { channelsRef,channelName,channelDetails,user } = this.state;
+
+        const key = channelsRef.push().key;
+
+        const newChannel = {
+            id: key,
+            name: channelName,
+            details: channelDetails,
+            createdBy: {
+                name: user.displayName,
+                avatar: user.photoURL
+            }
+        };
+
+        channelsRef
+        .child(key)
+        .update(newChannel)
+        .then(()=>{
+            this.setState({ channelName:'',channelDetails:'' });
+            this.closeModal();
+            console.log("channel added");
+        })
+        .catch(err=>{
+            console.error(err);
+        })
+    } 
+
+
+    handleSubmit = event => {
+        event.preventDefault();
+        if (this.isFormValid(this.state)) {
+          this.addChannel();           
+        };
     }
+
+            
+    
+
+    isFormValid = ({ channelName, channelDetails }) =>
+    channelName && channelDetails;
 
     handleChange = event =>{
         this.setState({
@@ -36,7 +76,7 @@ class Channels extends Component{
                     <Menu.Item>
                         <span>
                             <Icon name="exchange" /> Channels
-                        </span>
+                        </span>{" "}
                         ({channels.length}) <Icon name="add" onClick={this.openModal} />
                     </Menu.Item>
                 </Menu.Menu>
@@ -44,22 +84,22 @@ class Channels extends Component{
                 <Modal basic open={modal} onClose={this.closeModal} >
                     <Modal.Header>Add a Channel</Modal.Header>
                     <Modal.Content>
-                        <Form>
+                        <Form onSubmit={this.handleSubmit}>
                             <Form.Field>
-                                <Input 
-                                    fluid
-                                    label="Name of Channel"
-                                    name="changeName"
-                                    onChange={this.handleChange}
+                                <Input
+                                fluid
+                                label="Name of Channel"
+                                name="channelName"
+                                onChange={this.handleChange}
                                 />
                             </Form.Field>
 
                             <Form.Field>
-                                <Input 
-                                    fluid
-                                    label="About the Channel"
-                                    name="changeDetails"
-                                    onChange={this.handleChange}
+                                <Input
+                                fluid
+                                label="About the Channel"
+                                name="channelDetails"
+                                onChange={this.handleChange}
                                 />
                             </Form.Field>
                         </Form>
