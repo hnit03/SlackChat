@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import firebase from "../../firebase";
-import { Dropdown, Grid, Header, Icon } from "semantic-ui-react";
+import { Dropdown, Grid, Header, Icon,Image } from "semantic-ui-react";
 
 class UserPanel extends Component{
 
@@ -35,6 +35,7 @@ class UserPanel extends Component{
 
     render(){
 
+        const { user } = this.state;
         return(
             <Grid style={{background:'#3498db'}}>
                 <Grid.Column>
@@ -50,7 +51,7 @@ class UserPanel extends Component{
                     <Header style={{padding: '0.25em'}} inverted as="h4">
                         <Dropdown trigger={
                             
-                            <span> <Icon name="user"/>{this.state.user.displayName}</span>
+                            <span> <Image src={user.photoURL} spaced="right" avatar />{this.state.user.displayName}</span>
                         } options={this.dropdownOption()}/>
                     </Header>
                 </Grid.Column>
