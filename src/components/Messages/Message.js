@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import { Comment } from "semantic-ui-react";
 
 class Message extends React.Component {
@@ -12,13 +13,7 @@ class Message extends React.Component {
         return message.user.id === user.uid ? "message_self" : "";
     };
 
-    componentWillMount(){
-        console.log(233333);
-    }
-
-    componentDidMount() {
-        console.log(1111);
-    }
+    timeFromNow = timestamp => moment(timestamp).fromNow();
 
     render(){
 
@@ -29,7 +24,7 @@ class Message extends React.Component {
                 <Comment.Avatar src={message.user.avatar} />
                 <Comment.Content className={this.isOwnMessage(message, user)}>
                 <Comment.Author as="a">{message.user.name}</Comment.Author>
-                <Comment.Metadata></Comment.Metadata>
+                <Comment.Metadata>{this.timeFromNow(message.timestamp)}</Comment.Metadata>
                 <Comment.Text>{message.content}</Comment.Text>
                 </Comment.Content>
             </Comment>
