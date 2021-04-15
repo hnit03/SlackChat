@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Comment } from "semantic-ui-react";
+import { Comment, Image } from "semantic-ui-react";
 
 class Message extends React.Component {
 
@@ -15,6 +15,10 @@ class Message extends React.Component {
 
     timeFromNow = timestamp => moment(timestamp).fromNow();
 
+    isImage = (message)=>{
+        return message.hasOwnProperty('image') && !message.hasOwnProperty('content');
+    }
+
     render(){
 
         const { message,user } = this.state;
@@ -25,7 +29,10 @@ class Message extends React.Component {
                 <Comment.Content className={this.isOwnMessage(message, user)}>
                 <Comment.Author as="a">{message.user.name}</Comment.Author>
                 <Comment.Metadata>{this.timeFromNow(message.timestamp)}</Comment.Metadata>
-                <Comment.Text>{message.content}</Comment.Text>
+                { this.isImage(message) ? 
+                    <Image src={message.image} className="message_image"/> : 
+                    <Comment.Text>{message.content}</Comment.Text>
+                }
                 </Comment.Content>
             </Comment>
         );
