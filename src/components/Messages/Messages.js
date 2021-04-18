@@ -28,6 +28,14 @@ class Messages extends React.Component {
       this.addListeners(channel.id);
     }
   }
+  
+  isProgressBarVisible = (percent) =>{
+    if (percent > 0) {
+      this.setState({
+        progressBar: true
+      });
+    }
+  }
 
   addListeners = channelId => {
     this.addMessageListener(channelId);
@@ -108,7 +116,7 @@ class Messages extends React.Component {
 
   render() {
     // prettier-ignore
-    const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults, searchLoading, privateChannel } = this.state;
+    const { messagesRef, messages, channel, user, numUniqueUsers,progressBar, searchTerm, searchResults, searchLoading, privateChannel } = this.state;
 
     return (
       <React.Fragment>
@@ -121,7 +129,7 @@ class Messages extends React.Component {
         />
 
         <Segment>
-          <Comment.Group className="messages">
+          <Comment.Group className={progressBar ? "messages_progress" : "messages"}>
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}
@@ -134,6 +142,7 @@ class Messages extends React.Component {
           currentUser={user}
           isPrivateChannel={privateChannel}
           getMessagesRef={this.getMessagesRef}
+          isProgressBarVisible={this.isProgressBarVisible}
         />
       </React.Fragment>
     );

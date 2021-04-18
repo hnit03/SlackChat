@@ -80,52 +80,59 @@ class MessageForm extends React.Component {
     }
   };
 
-  uploadFile = (file, metadata) => {
+  uploadFile = ( file, metedata) =>{
     const pathToUpload = this.state.channel.id;
     const ref = this.props.getMessagesRef();
     const filePath = `${this.getPath()}/${uuid()}.jpg`;
 
-    this.setState(
-      {
-        uploadState: "uploading",
-        uploadTask: this.state.storageRef.child(filePath).put(file, metadata)
-      },
-      () => {
-        this.state.uploadTask.on(
-          "state_changed",
-          snap => {
-            const percentUploaded = Math.round(
-              (snap.bytesTransferred / snap.totalBytes) * 100
-            );
-            this.setState({ percentUploaded });
-          },
-          err => {
-            console.error(err);
-            this.setState({
-              errors: this.state.errors.concat(err),
-              uploadState: "error",
-              uploadTask: null
-            });
-          },
-          () => {
-            this.state.uploadTask.snapshot.ref
-              .getDownloadURL()
-              .then(downloadUrl => {
-                this.sendFileMessage(downloadUrl, ref, pathToUpload);
-              })
-              .catch(err => {
-                console.error(err);
-                this.setState({
-                  errors: this.state.errors.concat(err),
-                  uploadState: "error",
-                  uploadTask: null
-                });
-              });
-          }
-        );
-      }
+    this.setState({
+       uploadState: 'loading',
+       uploadTask: this.state.storageRef.child(filePath).put(file,metedata)
+    },
+     () => {
+       this.state.uploadTask.on('stage_changed', snap =>{
+         const percentUploaded = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+         this.props.isProgressBarVisible(percentUploaded);
+         this.setState({ percentUploaded });
+       },
+       err => {
+         console.log(err);
+         this.setState({
+           errors: this.state.errors.concat(err),
+           uploadState: 'error',
+           uploadTask: null
+         });
+       },
+       () =>{
+         this.state.uploadTask.snapshot.ref.getDownloadURL().then(downloadURL =>{
+           this.sendFileMessage(downloadURL, ref, pathToUpload);
+         })
+         .catch( err =>{
+           console.log(err);
+           this.setState({
+             errors: this.state.errors.concat(err),
+             uploadState: 'error',
+             uploadTask: null
+           });
+         })
+       }
+       )
+     }
     );
-  };
+ }
+
+ sendFileMessage = (fileURL, ref, pathToUpload) =>{
+   ref.child(pathToUpload)
+   .push()
+   .set(this.createMessage(fileURL))
+   .then(()=>{
+     this.setState({ uploadState: 'done' })
+   })
+   .catch(err =>{
+     console.log(err);
+     this.setState({ errors: this.state.errors.concat(err) })
+   })
+ }
 
   sendFileMessage = (fileUrl, ref, pathToUpload) => {
     ref
@@ -141,9 +148,9 @@ class MessageForm extends React.Component {
           errors: this.state.errors.concat(err)
         });
       });
-  };
+  }
 
-  render() {
+  render(){
     // prettier-ignore
     const { errors, message, loading, modal, uploadState, percentUploaded } = this.state;
 
@@ -175,7 +182,7 @@ class MessageForm extends React.Component {
           />
           <Button
             color="teal"
-            disabled={uploadState === "uploading"}
+            disabled={uploadState === "loading"}
             onClick={this.openModal}
             content="Upload Media"
             labelPosition="right"
@@ -190,6 +197,7 @@ class MessageForm extends React.Component {
         <ProgressBar
           uploadState={uploadState}
           percentUploaded={percentUploaded}
+          isProgressBarVisible={this.isProgressBarVisible}
         />
       </Segment>
     );
