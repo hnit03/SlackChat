@@ -8,7 +8,7 @@ import { Button, Form, Icon, Input, Menu, Modal } from "semantic-ui-react";
 class Channels extends Component{
 
     state = {
-        activeChannel: '',
+        activeChannel: this.props.activeChannel,
         user: this.props.currentUser,
         channels: [],
         channelName: '',
@@ -20,6 +20,8 @@ class Channels extends Component{
 
     componentDidMount(){
         this.addListeners();
+        console.log(this.props.activeChannel)
+        console.log(this.state.activeChannel);
     }
 
     componentWillMount(){
@@ -42,7 +44,7 @@ class Channels extends Component{
         const firstChannel = this.state.channels[0];
         if(this.state.firstLoad && this.state.channels.length > 0){
             this.props.setCurrentChannel(firstChannel);
-            this.setActiveChannel(firstChannel);
+            this.props.setActiveChannel(firstChannel.id);
         }
         this.setState({ firstLoad: false });
     }
@@ -88,13 +90,9 @@ class Channels extends Component{
     }
 
     changeChannel = (channel) =>{
-        this.setActiveChannel(channel);
+        this.props.setActiveChannel(channel.id);
         this.props.setCurrentChannel(channel);
         this.props.setPrivateChannel(false);
-    }
-
-    setActiveChannel = channel =>{
-        this.setState({ activeChannel: channel.id });
     }
 
     displayChannels = channels =>(

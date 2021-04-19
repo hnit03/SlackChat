@@ -5,10 +5,18 @@ import DirectMessage from "./DirectMessage";
 import UserPanel from "./UserPanel";
 
 class SidePanel extends Component{
+    state = {
+        activeChannel:''
+    }
+
+    setActiveChannel = channelID =>{
+        this.setState({ activeChannel: channelID });
+    }
 
     render(){
 
         const { currentUser } = this.props;
+        const { activeChannel } = this.state;
 
         return(
             <Menu
@@ -19,8 +27,16 @@ class SidePanel extends Component{
                 style={{backgroundColor: '#3498db', fontSize:'1.2rem'}}
             >
                 <UserPanel currentUser={ currentUser }/>
-                <Channels currentUser={ currentUser }/>
-                <DirectMessage currentUser={ currentUser } />
+                <Channels 
+                    activeChannel={activeChannel}
+                    setActiveChannel={this.setActiveChannel}
+                    currentUser={ currentUser }
+                />
+                <DirectMessage 
+                    activeChannel={activeChannel}
+                    currentUser={ currentUser } 
+                    setActiveChannel={this.setActiveChannel}
+                />
             </Menu>
         );
     }
