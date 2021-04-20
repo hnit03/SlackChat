@@ -1,12 +1,17 @@
 import React, { Component } from "react";
 import firebase from "../../firebase";
-import { Dropdown, Grid, Header, Icon,Image } from "semantic-ui-react";
+import { Button, Dropdown, Grid, Header, Icon,Image,Input,Modal } from "semantic-ui-react";
 
 class UserPanel extends Component{
 
     state = {
-        user : this.props.currentUser
+        user : this.props.currentUser,
+        modal:false
     }
+
+    openModal = () => this.setState({ modal: true });
+
+    closeModal = () => this.setState({ modal: false });
 
     dropdownOption = () =>[
         {
@@ -16,7 +21,7 @@ class UserPanel extends Component{
         },
         {
             key: 'avatar',
-            text: <span>Change avatar</span>
+            text: <span onClick={this.openModal} >Change avatar</span>
         },
         {
             key:'signout',
@@ -35,7 +40,7 @@ class UserPanel extends Component{
 
     render(){
 
-        const { user } = this.state;
+        const { user,modal } = this.state;
         return(
             <Grid style={{background:'#3498db'}}>
                 <Grid.Column>
@@ -54,6 +59,39 @@ class UserPanel extends Component{
                             <span> <Image src={user.photoURL} spaced="right" avatar />{this.state.user.displayName}</span>
                         } options={this.dropdownOption()}/>
                     </Header>
+
+                    <Modal basic open={modal} onClose={this.closeModal} >
+                        <Modal.Header>Change User avatar</Modal.Header>
+                        <Modal.Content>
+                            <Input 
+                                fluid
+                                type='file'
+                                label='New Avatar'
+                                name='previewImage'
+                            />
+                            <Grid centered stackable columns={2} >
+                                <Grid.Row centered >
+                                    <Grid.Column className='ui center aligned grid'>
+                                    
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                    
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button color='green' inverted> 
+                                <Icon name='save'/> Change Avatar
+                            </Button>
+                            <Button color='green' inverted> 
+                                <Icon name='image'/> Preview
+                            </Button>
+                            <Button color='red' inverted onClick={this.closeModal}> 
+                                <Icon name='remove'/> Cancel
+                            </Button>
+                        </Modal.Actions>
+                    </Modal>
                 </Grid.Column>
             </Grid>
         );
