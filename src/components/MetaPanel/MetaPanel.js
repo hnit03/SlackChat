@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Accordion, Header, Icon, Segment } from "semantic-ui-react";
+import { Accordion, Header, Icon, Image, Segment } from "semantic-ui-react";
 
 class MetaPanel extends Component{
     state ={
+        currentChannel:this.props.currentChannel,
         privateChannel: this.props.isPrivateChannel,
         activeIndex : 0
     }
@@ -14,13 +15,13 @@ class MetaPanel extends Component{
         this.setState({ activeIndex: newIndex });
     }
     render(){
-        const { activeIndex,privateChannel } =this.state;
+        const { activeIndex,privateChannel,currentChannel } =this.state;
 
-        if(privateChannel) return null;
-        
+        if(privateChannel || !currentChannel) return null;
+
         return(
-            <Segment>
-                <Header as="h3" attached="top">About # channel </Header>
+            <Segment loading={!currentChannel}>
+                <Header as="h3" attached="top">About {currentChannel.name}</Header>
                 <Accordion styled attached="true">
                     <Accordion.Title
                         active={activeIndex === 0}
@@ -32,7 +33,7 @@ class MetaPanel extends Component{
                         Channel Details
                     </Accordion.Title>
                     <Accordion.Content active={activeIndex === 0}>
-                        Details
+                        {currentChannel.details}
                     </Accordion.Content>
 
                     <Accordion.Title
@@ -58,7 +59,10 @@ class MetaPanel extends Component{
                         Created By
                     </Accordion.Title>
                     <Accordion.Content active={activeIndex === 2}>
-                        Creator
+                        <Header as='h3' >
+                            <Image circular src={currentChannel.createdBy.avatar} />
+                            {currentChannel.createdBy.name}
+                        </Header>
                     </Accordion.Content>
                 </Accordion>
             </Segment>
