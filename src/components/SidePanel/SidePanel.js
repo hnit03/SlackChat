@@ -28,7 +28,7 @@ class SidePanel extends Component{
                 style={{backgroundColor: '#3498db', fontSize:'1.2rem'}}
             >
                 <UserPanel currentUser={ currentUser }/>
-                <Starred />
+                <Starred currentUser={ currentUser } />
                 <Channels 
                     activeChannel={activeChannel}
                     setActiveChannel={this.setActiveChannel}
