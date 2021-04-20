@@ -6,12 +6,19 @@ import { Button, Dropdown, Grid, Header, Icon,Image,Input,Modal } from "semantic
 class UserPanel extends Component{
 
     state = {
-        user : this.props.currentUser,
-        modal:false,
-        previewImage: '',
-        croppedImage:'',
-        blob:''
-    }
+        user: this.props.currentUser,
+        modal: false,
+        previewImage: "",
+        croppedImage: "",
+        blob: null,
+        uploadedCroppedImage: "",
+        storageRef: firebase.storage().ref(),
+        userRef: firebase.auth().currentUser,
+        usersRef: firebase.database().ref("user"),
+        metadata: {
+          contentType: "image/jpeg"
+        }
+      };
 
     openModal = () => this.setState({ modal: true });
 
@@ -65,6 +72,45 @@ class UserPanel extends Component{
         }
     }
 
+    uploadCroppedImage = () => {
+        const { storageRef, userRef, blob, metadata } = this.state;
+    
+        storageRef
+          .child(`avatars/user-${userRef.uid}`)
+          .put(blob, metadata)
+          .then(snap => {
+            snap.ref.getDownloadURL().then(downloadURL => {
+              this.setState({ uploadedCroppedImage: downloadURL }, () =>
+                this.changeAvatar()
+              );
+            });
+          });
+      }
+
+      changeAvatar = () => {
+        this.state.userRef
+          .updateProfile({
+            photoURL: this.state.uploadedCroppedImage
+          })
+          .then(() => {
+            console.log("PhotoURL updated");
+            this.closeModal();
+          })
+          .catch(err => {
+            console.error(err);
+          });
+    
+        this.state.usersRef
+          .child(this.state.user.uid)
+          .update({ avatar: this.state.uploadedCroppedImage })
+          .then(() => {
+            console.log("User avatar updated");
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      };
+
     render(){
 
         const { user,modal,previewImage,croppedImage } = this.state;
@@ -104,8 +150,8 @@ class UserPanel extends Component{
                                             <AvatarEditor 
                                                 ref= {node => (this.avatarEditor = node)}
                                                 image={previewImage}
-                                                width={200}
-                                                height={200}
+                                                width={120}
+                                                height={120}
                                                 border={50}
                                                 scale={1.2}
                                             />
@@ -116,8 +162,8 @@ class UserPanel extends Component{
                                             <Image 
                                                 src={croppedImage}
                                                 style={{ margin:'3.5em auto' }}
-                                                width={150}
-                                                height={150}
+                                                width={100}
+                                                height={100}
                                             />
                                         )}
                                     </Grid.Column>
@@ -125,7 +171,7 @@ class UserPanel extends Component{
                             </Grid>
                         </Modal.Content>
                         <Modal.Actions>
-                            {croppedImage && <Button color='green' inverted> 
+                            {croppedImage && <Button color='green' inverted onClick={this.uploadCroppedImage}> 
                                 <Icon name='save'/> Change Avatar
                             </Button>}
                             <Button color='green' inverted onClick={this.handleCropImage}> 
