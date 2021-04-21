@@ -121,19 +121,6 @@ class MessageForm extends React.Component {
     );
  }
 
- sendFileMessage = (fileURL, ref, pathToUpload) =>{
-   ref.child(pathToUpload)
-   .push()
-   .set(this.createMessage(fileURL))
-   .then(()=>{
-     this.setState({ uploadState: 'done' })
-   })
-   .catch(err =>{
-     console.log(err);
-     this.setState({ errors: this.state.errors.concat(err) })
-   })
- }
-
   sendFileMessage = (fileUrl, ref, pathToUpload) => {
     ref
       .child(pathToUpload)
