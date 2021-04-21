@@ -15,9 +15,11 @@ class UserPanel extends React.Component {
     storageRef: firebase.storage().ref(),
     userRef: firebase.auth().currentUser,
     usersRef: firebase.database().ref("user"),
+    messagesRef: firebase.database().ref(),
     metadata: {
       contentType: "image/jpeg"
-    }
+    },
+    messages:[]
   };
 
   openModal = () => this.setState({ modal: true });
@@ -52,9 +54,10 @@ class UserPanel extends React.Component {
       .put(blob, metadata)
       .then(snap => {
         snap.ref.getDownloadURL().then(downloadURL => {
-          this.setState({ uploadedCroppedImage: downloadURL }, () =>
-            this.changeAvatar()
-          );
+          this.setState({ uploadedCroppedImage: downloadURL }, () =>{
+            this.changeAvatar();
+            this.changeAvatarOfPoster();
+          });
         });
       });
   };
@@ -81,7 +84,34 @@ class UserPanel extends React.Component {
       .catch(err => {
         console.error(err);
       });
+
+      
   };
+
+  changeAvatarOfPoster = () =>{
+    this.state.messagesRef
+      .child('messages')
+      .once('value', snap =>{
+        snap.forEach(childs =>{
+          childs.forEach(child =>{
+            if(child.val().user.id === this.state.user.uid){
+                this.state.messagesRef
+                .child('messages') 
+                .child(childs.key)
+                .child(child.key)
+                .child('user')
+                .update({ avatar: this.state.uploadedCroppedImage })
+                .then(() => {
+                  console.log("User avatar updated");
+                })
+                .catch(err => {
+                  console.error(err);
+                });
+            }
+          });
+        });
+      });
+  }
 
   handleChange = event => {
     const file = event.target.files[0];
