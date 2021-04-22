@@ -69,6 +69,28 @@ class Messages extends React.Component {
     });
   }
 
+  removeMessage = (messageID) =>{
+    this.state.messagesRef
+    .child(this.state.channel.id)
+    .on('value',snap =>{
+      snap.forEach(childs =>{
+        childs.forEach(child=>{
+          if(child.val() === messageID){
+            this.state.messagesRef
+              .child(this.state.channel.id)
+              .child(childs.key)
+              .remove()
+              .catch(err =>{
+                console.log(err);
+              })
+          }
+        })
+      })
+    });
+    
+    this.addMessageListener(this.state.channel.id);
+  }
+
   scrollToBottom = () =>{
     this.messageEnd.scrollIntoView({ behavior:'smooth' });
   }
@@ -253,6 +275,7 @@ class Messages extends React.Component {
         key={message.timestamp}
         message={message}
         user={this.state.user}
+        removeMessage={this.removeMessage}
       />
     ));
   }

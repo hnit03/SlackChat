@@ -18,7 +18,7 @@ body,
 }
 
 /* MessageForm.js */
-.message__form {
+.message_form {
   position: fixed !important;
   bottom: 1em;
   margin-left: 320px !important;
@@ -32,42 +32,23 @@ body,
 }
 
 /* Message.js */
-.message__self {
+.message_self {
   border-left: 2px solid orange;
   padding-left: 8px;
 }
 
-.message__image {
+.message_image {
   padding: 1em;
 }
 
 /* ProgressBar.js */
-.progress__bar {
+.progress_bar {
   margin: 0.3em 0 0 0 !important;
 }
 
-/* ColorPanel.js */
-.color__container {
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  width: 35px;
-  border-radius: 3px;
-}
-
-.color__square {
-  width: 35px;
-  height: 35px;
-}
-
-.color__overlay {
-  width: 85px;
-  height: 35px;
-  transform: rotate(225deg);
-}
 
 /* Typing.js */
-.user__typing {
+.user_typing {
   font-style: italic;
   font-weight: bold;
   margin-right: 3px;
@@ -83,7 +64,7 @@ body,
   border-radius: 20px;
 }
 
-.typing__dot {
+.typing_dot {
   float: left;
   width: 8px;
   height: 8px;
@@ -94,15 +75,15 @@ body,
   animation: loadingFade 1s infinite;
 }
 
-.typing__dot:nth-child(1) {
+.typing_dot:nth-child(1) {
   animation-delay: 0s;
 }
 
-.typing__dot:nth-child(2) {
+.typing_dot:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.typing__dot:nth-child(3) {
+.typing_dot:nth-child(3) {
   animation-delay: 0.4s;
 }
 
@@ -155,14 +136,14 @@ body,
   }
 }
 
-.skeleton__avatar {
+.skeleton_avatar {
   height: 35px;
   width: 35px;
   border-radius: 3px;
   background-color: rgba(58, 57, 57, 0.3);
 }
 
-.skeleton__author {
+.skeleton_author {
   background-color: rgba(58, 57, 57, 0.3);
   width: 120px;
   height: 10px;
@@ -173,7 +154,7 @@ body,
   right: 0;
 }
 
-.skeleton__details {
+.skeleton_details {
   background-color: rgba(58, 57, 57, 0.3);
   height: 20px;
   border-radius: 3px;
