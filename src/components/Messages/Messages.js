@@ -8,6 +8,7 @@ import MessagesHeader from "./MessagesHeader";
 import MessagesForm from "./MessagesForm";
 import Message from "./Message";
 import Typing from "./Typing";
+import Sleketon from "./Sleketon";
 
 class Messages extends React.Component {
   state = {
@@ -26,7 +27,7 @@ class Messages extends React.Component {
     searchResults: [],
     typingRef: firebase.database().ref('typing'),
     typingUsers: [],
-    connectedRef: firebase.database().ref('.info/connected')
+    connectedRef: firebase.database().ref('.info/connected'),
   };
 
   componentDidMount() {
@@ -241,9 +242,19 @@ class Messages extends React.Component {
     ))
   )
 
+  displayMessageSleketon = loading =>
+    loading ? (
+      <React.Fragment>
+        {[...Array(10)].map((_,i)=>(
+          <Sleketon key={i} />
+        ))}
+      </React.Fragment>
+    ): null
+  
+
   render() {
     // prettier-ignore
-    const { messagesRef, messages, channel, user, numUniqueUsers, typingUsers,
+    const { messagesRef, messages, channel, user, numUniqueUsers, typingUsers,messagesLoading,
       progressBar, searchTerm, searchResults, searchLoading, privateChannel,isChannelStarred } = this.state;
 
     return (
@@ -260,6 +271,7 @@ class Messages extends React.Component {
 
         <Segment>
           <Comment.Group className={progressBar ? "messages_progress" : "messages"}>
+            {this.displayMessageSleketon(messagesLoading)}
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}
